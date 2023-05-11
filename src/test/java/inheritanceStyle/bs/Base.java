@@ -1,4 +1,4 @@
-package bs;
+package inheritanceStyle.bs;
 
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;

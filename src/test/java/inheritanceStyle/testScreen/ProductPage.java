@@ -1,15 +1,14 @@
-package testScreen;
+package inheritanceStyle.testScreen;
 
-import bs.Base;
+import inheritanceStyle.bs.Base;
 import io.appium.java_client.pagefactory.AndroidFindBy;
-import io.appium.java_client.pagefactory.AndroidFindBySet;
 import io.appium.java_client.pagefactory.iOSXCUITFindBy;
 import org.openqa.selenium.WebElement;
 
 import java.util.List;
 
 
-public class ProductPage extends Base{
+public class ProductPage extends Base {
 
     @AndroidFindBy(id="productTV")
     @iOSXCUITFindBy(id="")

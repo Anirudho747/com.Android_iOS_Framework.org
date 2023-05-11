@@ -1,10 +1,10 @@
-package testCases;
+package inheritanceStyle.testCases;
 
-import bs.Base;
+import inheritanceStyle.bs.Base;
 import org.testng.Assert;
 import org.testng.annotations.*;
-import testScreen.LandingPage;
-import testScreen.ProductPage;
+import inheritanceStyle.testScreen.LandingPage;
+import inheritanceStyle.testScreen.ProductPage;
 
 import java.lang.reflect.Method;
 

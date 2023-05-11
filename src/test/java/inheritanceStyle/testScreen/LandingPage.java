@@ -1,8 +1,7 @@
-package testScreen;
+package inheritanceStyle.testScreen;
 
-import bs.Base;
+import inheritanceStyle.bs.Base;
 import io.appium.java_client.pagefactory.AndroidFindBy;
-import io.appium.java_client.pagefactory.AndroidFindBySet;
 import io.appium.java_client.pagefactory.iOSXCUITFindBy;
 import org.openqa.selenium.WebElement;
 
@@ -30,7 +29,7 @@ public class LandingPage extends Base {
 
     public void clickMenu()
     {
-        menu.click();
+        click(menu);
     }
 
     public void clickLogin()
