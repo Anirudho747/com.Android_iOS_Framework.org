@@ -140,8 +140,8 @@ public class Base2 {
 
                 if(androidEmulatorAlowed.equalsIgnoreCase("true"))
                 {
-                   dc.setCapability("platformVersion",props.get("androidPlatformVersion"));
-                    //           dc.setCapability("avd", props.get("androidDevice"));
+                 // dc.setCapability("platformVersion",props.get("androidPlatformVersion"));
+                  dc.setCapability("avd", deviceName2);
                 }
                 else
                 {

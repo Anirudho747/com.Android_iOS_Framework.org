@@ -22,7 +22,7 @@ public class LoginTests2 {
     public void fireUp()
     {
         bs = new Base2();
-        bs.startAppiumServer();
+  //      bs.startAppiumServer();
     }
 
 
