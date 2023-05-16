@@ -18,12 +18,19 @@ public class LoginTests2 {
     Base2 bs;
     TestData td;
 
-    @Parameters({"emulator","platformName","deviceName"})
-    @BeforeClass
-    public void beforeClass(String emulator2,String platformName2,String deviceName2)
+    @BeforeSuite
+    public void fireUp()
     {
         bs = new Base2();
-        bs.initialiseDriver(emulator2,platformName2,deviceName2);
+        bs.startAppiumServer();
+    }
+
+
+    @Parameters({"emulator","platformName","deviceName"})
+    @BeforeClass
+    public void beforeClass(String emulator,String platformName,String deviceName)
+    {
+        bs.initialiseDriver(emulator,platformName,deviceName);
         lp = new LandingPage2();
         pp = new ProductPage2();
         td = new TestData();

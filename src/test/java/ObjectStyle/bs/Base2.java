@@ -7,7 +7,12 @@ import io.appium.java_client.pagefactory.AppiumFieldDecorator;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
 import io.appium.java_client.screenrecording.CanRecordScreen;
+import io.appium.java_client.service.local.AppiumDriverLocalService;
+import io.appium.java_client.service.local.AppiumServiceBuilder;
+import io.appium.java_client.service.local.flags.GeneralServerFlag;
 import io.netty.handler.codec.base64.Base64Encoder;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
@@ -23,6 +28,7 @@ import utils.TestUtils;
 
 import java.io.*;
 import java.net.MalformedURLException;
+import java.net.ServerSocket;
 import java.net.URL;
 import java.time.Duration;
 import java.util.HashMap;
@@ -35,23 +41,81 @@ public class Base2 {
     protected static Properties props;
     protected static FileInputStream fis;
     protected static String dateTime;
-    protected String pn2;
-    protected String em2;
-    protected String dn2;
     TestUtils utils;
+    private static AppiumDriverLocalService server;
+    static Logger log = LogManager.getLogger(Base2.class.getName());
 
-    public void setDriver(AppiumDriver driver)
-    {
+    public void setDriver(AppiumDriver driver) {
         this.driver = driver;
     }
 
-    public AppiumDriver getDriver()
-    {
+    public AppiumDriver getDriver() {
         return driver;
     }
 
-    public void initialiseDriver(String em2, String pn2,String dn2)
+    public void shutDownAppiumServer() {
+        server.stop();
+    }
+
+    public void startAppiumServer() {
+          server = getAppiumService(); // -> If using Mac, uncomment this statement and comment below statement
+   //     server = getAppiumServerDefault(); // -> If using Windows, uncomment this statement and comment above statement
+        if(!checkIfAppiumServerIsRunnning(4723)) {
+            server.start();
+            server.clearOutPutStreams(); // -> Comment this if you want to see server logs in the console
+            log.info("Appium server started");
+        } else {
+            log.info("Appium server already running");
+        }
+    }
+
+    public boolean checkIfAppiumServerIsRunnning(int port) {
+        boolean isAppiumServerRunning = false;
+        ServerSocket socket;
+        try {
+            socket = new ServerSocket(port);
+            socket.close();
+        } catch (IOException e) {
+            System.out.println("1");
+            isAppiumServerRunning = true;
+        } finally {
+            socket = null;
+        }
+        return isAppiumServerRunning;
+    }
+
+    // for Windows
+    public AppiumDriverLocalService getAppiumServerDefault() {
+        return AppiumDriverLocalService.buildDefaultService();
+    }
+
+    // for Mac. Update the paths as per your Mac setup
+    public AppiumDriverLocalService getAppiumService()
     {
+        HashMap<String, String> environment = new HashMap<String, String>();
+        environment.put("PATH", "enter_your_path_here" + System.getenv("PATH"));
+        environment.put("ANDROID_HOME", "enter_android_home_path");
+        return AppiumDriverLocalService.buildService(new AppiumServiceBuilder()
+                .usingDriverExecutable(new File("/usr/local/bin/node"))
+                .withAppiumJS(new File("/usr/local/lib/node_modules/appium/build/lib/main.js"))
+                .usingPort(4723)
+                .withArgument(GeneralServerFlag.SESSION_OVERRIDE)
+//				.withArgument(() -> "--allow-insecure","chromedriver_autodownload")
+                .withEnvironment(environment)
+                .withLogFile(new File("ServerLogs/server.log")));
+    }
+
+
+
+    public void initialiseDriver(String emulator2, String platformName2,String deviceName2)
+    {
+
+        log.info("Info Message");
+        log.error("Error Message");
+        log.debug("Debug Message");
+        log.warn("Warning Message");
+
+
         utils = new TestUtils();
         dateTime = utils.getDateTime();
         try
@@ -61,9 +125,9 @@ public class Base2 {
         URL url;
         fis = new FileInputStream(propFileName);
         props.load(fis);
-        String platformName = (String) props.get("platformName");
-        System.out.println(em2);
-        String androidEmulatorAlowed = em2;
+        String platformName = platformName2;
+        System.out.println(emulator2);
+        String androidEmulatorAlowed = emulator2;
         String iOSEmulatorAlowed = (String) props.get("iOSEmulator");
 
         DesiredCapabilities dc = new DesiredCapabilities();
@@ -71,8 +135,8 @@ public class Base2 {
         {
             case "Android":
                 dc.setCapability(AndroidMobileCapabilityType.AUTO_GRANT_PERMISSIONS, true);
-                dc.setCapability(MobileCapabilityType.PLATFORM_NAME, pn2);
-                dc.setCapability(MobileCapabilityType.DEVICE_NAME,dn2);
+                dc.setCapability(MobileCapabilityType.PLATFORM_NAME, platformName2);
+                dc.setCapability(MobileCapabilityType.DEVICE_NAME,deviceName2);
 
                 if(androidEmulatorAlowed.equalsIgnoreCase("true"))
                 {
@@ -94,7 +158,7 @@ public class Base2 {
                 break;
 
             case "iOS":
-                dc.setCapability(MobileCapabilityType.PLATFORM_NAME, props.get("platformName"));
+                dc.setCapability(MobileCapabilityType.PLATFORM_NAME, platformName2);
                 if(iOSEmulatorAlowed.equalsIgnoreCase("true"))
                 {
                     dc.setCapability("platformVersion",props.get("iOSPlatformVersion"));

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<suite name="Suite" parallel="false">
+<suite name="Suite" parallel="none">
     <test name="Test">
         <listeners>
             <listener class-name="listeners.TestListener" />
