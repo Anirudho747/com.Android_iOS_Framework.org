@@ -1,5 +1,8 @@
 package ObjectStyle.bs;
 
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.reporter.ExtentSparkReporter;
+import com.aventstack.extentreports.reporter.configuration.Theme;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.ios.IOSDriver;
@@ -32,7 +35,6 @@ import java.net.ServerSocket;
 import java.net.URL;
 import java.time.Duration;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Properties;
 
 public class Base2 {
@@ -41,6 +43,8 @@ public class Base2 {
     protected static Properties props;
     protected static FileInputStream fis;
     protected static String dateTime;
+    public ExtentReports extent;
+    public ExtentSparkReporter sparkAll ;
     TestUtils utils;
     private static AppiumDriverLocalService server;
     static Logger log = LogManager.getLogger(Base2.class.getName());
@@ -51,6 +55,22 @@ public class Base2 {
 
     public AppiumDriver getDriver() {
         return driver;
+    }
+
+    public void flushExtent()
+    {
+        extent.flush();
+    }
+
+    public void setExtent()
+    {
+        extent = new ExtentReports();
+        sparkAll = new ExtentSparkReporter("spark/SparkAll.html");
+        sparkAll.config().setDocumentTitle("Om Prakash");
+        sparkAll.config().setReportName("https://www.extentreports.com/docs/versions/5/java/index.html");
+        sparkAll.config().setTheme(Theme.DARK);
+
+        extent.attachReporter(sparkAll);
     }
 
     public void shutDownAppiumServer() {
@@ -105,8 +125,6 @@ public class Base2 {
                 .withLogFile(new File("ServerLogs/server.log")));
     }
 
-
-
     public void initialiseDriver(String emulator2, String platformName2,String deviceName2)
     {
 
@@ -115,6 +133,7 @@ public class Base2 {
         log.debug("Debug Message");
         log.warn("Warning Message");
 
+        setExtent();
 
         utils = new TestUtils();
         dateTime = utils.getDateTime();

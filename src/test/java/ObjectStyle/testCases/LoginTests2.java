@@ -3,6 +3,9 @@ package ObjectStyle.testCases;
 import ObjectStyle.bs.Base2;
 import ObjectStyle.testScreen.LandingPage2;
 import ObjectStyle.testScreen.ProductPage2;
+import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.Status;
+import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import io.appium.java_client.pagefactory.AppiumFieldDecorator;
 import org.openqa.selenium.support.PageFactory;
 import org.testng.Assert;
@@ -17,6 +20,9 @@ public class LoginTests2 {
     ProductPage2 pp;
     Base2 bs;
     TestData td;
+//    ExtentReports extent;
+//    ExtentSparkReporter sparkAll ;
+
 
     @BeforeSuite
     public void fireUp()
@@ -34,6 +40,7 @@ public class LoginTests2 {
         lp = new LandingPage2();
         pp = new ProductPage2();
         td = new TestData();
+
     }
 
     @BeforeMethod
@@ -45,18 +52,23 @@ public class LoginTests2 {
     @AfterClass
     public void afterClass()
     {
+        bs.flushExtent();
         bs.quitDriver();
     }
 
     @AfterMethod
-    public void afterMethod()
+    public void afterMethod(Method m)
     {
-
+        
     }
 
     @Test(priority = 2)
     public void loginSuccess()
     {
+        bs.extent.createTest("loginSuccess")
+                .log(Status.PASS, "This is a logging event for MyFirstTest, and it passed!");
+
+
         lp.clickMenu();
         lp.clickLogin();
         lp.enterName(td.userName[0]);
