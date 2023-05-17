@@ -52,21 +52,21 @@ public class LoginTests2 {
     @AfterClass
     public void afterClass()
     {
-        bs.flushExtent();
+//        bs.flushExtent();
         bs.quitDriver();
     }
 
     @AfterMethod
     public void afterMethod(Method m)
     {
-        
+
     }
 
     @Test(priority = 2)
     public void loginSuccess()
     {
-        bs.extent.createTest("loginSuccess")
-                .log(Status.PASS, "This is a logging event for MyFirstTest, and it passed!");
+//        bs.extent.createTest("loginSuccess")
+//                .log(Status.PASS, "This is a logging event for MyFirstTest, and it passed!");
 
 
         lp.clickMenu();

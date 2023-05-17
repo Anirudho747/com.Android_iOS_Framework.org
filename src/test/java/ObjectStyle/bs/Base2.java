@@ -1,40 +1,35 @@
 package ObjectStyle.bs;
 
 import com.aventstack.extentreports.ExtentReports;
+import com.aventstack.extentreports.ExtentTest;
 import com.aventstack.extentreports.reporter.ExtentSparkReporter;
 import com.aventstack.extentreports.reporter.configuration.Theme;
 import io.appium.java_client.AppiumDriver;
 import io.appium.java_client.android.AndroidDriver;
 import io.appium.java_client.ios.IOSDriver;
-import io.appium.java_client.pagefactory.AppiumFieldDecorator;
 import io.appium.java_client.remote.AndroidMobileCapabilityType;
 import io.appium.java_client.remote.MobileCapabilityType;
-import io.appium.java_client.screenrecording.CanRecordScreen;
 import io.appium.java_client.service.local.AppiumDriverLocalService;
 import io.appium.java_client.service.local.AppiumServiceBuilder;
 import io.appium.java_client.service.local.flags.GeneralServerFlag;
-import io.netty.handler.codec.base64.Base64Encoder;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.openqa.selenium.NoSuchElementException;
 import org.openqa.selenium.WebDriver;
 import org.openqa.selenium.WebElement;
 import org.openqa.selenium.remote.DesiredCapabilities;
-import org.openqa.selenium.support.PageFactory;
 import org.openqa.selenium.support.ui.ExpectedConditions;
 import org.openqa.selenium.support.ui.FluentWait;
 import org.openqa.selenium.support.ui.Wait;
 import org.openqa.selenium.support.ui.WebDriverWait;
-import org.testng.ITestResult;
-import org.testng.annotations.*;
 import utils.TestUtils;
-
 import java.io.*;
 import java.net.MalformedURLException;
 import java.net.ServerSocket;
 import java.net.URL;
 import java.time.Duration;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 public class Base2 {
@@ -43,11 +38,12 @@ public class Base2 {
     protected static Properties props;
     protected static FileInputStream fis;
     protected static String dateTime;
-    public ExtentReports extent;
-    public ExtentSparkReporter sparkAll ;
+    public static ExtentReports extent;
+    public static ExtentSparkReporter sparkAll ;
     TestUtils utils;
     private static AppiumDriverLocalService server;
     static Logger log = LogManager.getLogger(Base2.class.getName());
+    static Map<Integer, ExtentTest> extentTestMap = new HashMap();
 
     public void setDriver(AppiumDriver driver) {
         this.driver = driver;
@@ -57,20 +53,28 @@ public class Base2 {
         return driver;
     }
 
-    public void flushExtent()
+    public static ExtentReports getReporter()
     {
-        extent.flush();
+        if (extent == null) {
+            extent = new ExtentReports();
+            sparkAll = new ExtentSparkReporter("spark/SparkAll.html");
+            sparkAll.config().setDocumentTitle("Om Prakash Chapter 157");
+            sparkAll.config().setReportName("https://www.extentreports.com/docs/versions/5/java/index.html");
+            sparkAll.config().setTheme(Theme.DARK);
+            extent.attachReporter(sparkAll);
+        }
+        return extent;
     }
 
-    public void setExtent()
-    {
-        extent = new ExtentReports();
-        sparkAll = new ExtentSparkReporter("spark/SparkAll.html");
-        sparkAll.config().setDocumentTitle("Om Prakash");
-        sparkAll.config().setReportName("https://www.extentreports.com/docs/versions/5/java/index.html");
-        sparkAll.config().setTheme(Theme.DARK);
+    public static ExtentTest getTest() {
+        return (ExtentTest) extentTestMap.get((int) (long) (Thread.currentThread().getId()));
+    }
 
-        extent.attachReporter(sparkAll);
+    public static ExtentTest startTest(String testName, String desc)
+    {
+        ExtentTest test = getReporter().createTest(testName, desc);
+        extentTestMap.put((int) (long) (Thread.currentThread().getId()), test);
+        return test;
     }
 
     public void shutDownAppiumServer() {
@@ -133,7 +137,7 @@ public class Base2 {
         log.debug("Debug Message");
         log.warn("Warning Message");
 
-        setExtent();
+        //setExtent();
 
         utils = new TestUtils();
         dateTime = utils.getDateTime();
