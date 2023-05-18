@@ -12,6 +12,8 @@
     <!--            <parameter name="chromeDriverPort" value="11000" />        -->
           <classes>
               <class name="ObjectStyle.testCases.LoginTests2"/>
+              <class name="ObjectStyle.testCases.LoginTests2_2"/>
+              <class name="ObjectStyle.testCases.LoginTests2_3"/>
           </classes>
       </test>
   <!--
